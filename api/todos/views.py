@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.http.response import Http404 #means we potentuially set up a not found route if thing trying to get not found
 from rest_framework.views import APIView #gives us get, post methods and other things
-from .models import Todo #importing todo model
-from .serializers import TodoSerializer #importing our serializer
+from rest_framework.viewsets import ModelViewSet
+from .models import Todo, Category #importing todo model
+from .serializers import TodoSerializer, CategorySerializer #importing our serializer
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -73,3 +74,14 @@ class TodoAPIView(APIView): #meaning it inherits from the APIView, gives us func
         todo_delete.delete()
         response = Response(status=status.HTTP_204_NO_CONTENT)
         return response
+
+#-------MODEL VIEWSET--------------#
+# DIFFERENCE APIView they provide methods for get, post, patch, delete BUT you need to write method for each verb
+# Say we want to make an action on todo making it unavailable or change something with a POST req, we couldnt do that
+# With APIView since post already exists....lots of hoops
+# Model ViewSets they are classbased
+
+class CategoryViewSet(ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    http_method_names = ['get', 'post'] #these arent really necesssary
